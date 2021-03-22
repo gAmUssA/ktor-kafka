@@ -2,7 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `java-library`
-    kotlin("jvm") 
+    kotlin("jvm")
+    maven
 }
 
 val ktor_version: String by project
