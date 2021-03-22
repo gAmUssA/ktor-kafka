@@ -1,12 +1,12 @@
+plugins {
+    application
+    kotlin("jvm")  
+    id("com.avast.gradle.docker-compose") version "0.14.1"
+}
+
 val logback_version: String by project
 val ktor_version: String by project
 val kotlin_version: String by project
-
-plugins {
-    application
-    kotlin("jvm") 
-    id("com.avast.gradle.docker-compose") version "0.14.1"
-}
 
 group = "io.confluent.developer"
 version = "0.0.1-SNAPSHOT"
@@ -37,6 +37,7 @@ repositories {
 
 dependencies {
     implementation(project(":feature"))
+    implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")

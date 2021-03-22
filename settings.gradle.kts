@@ -1,9 +1,6 @@
 pluginManagement {
-    repositories {
-        mavenCentral()
-        google()
-        gradlePluginPortal()
-        jcenter()
+    plugins {
+        kotlin("jvm") version "1.4.30"
     }
 }
 rootProject.name = "ktor-kafka"

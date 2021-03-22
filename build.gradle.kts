@@ -6,6 +6,7 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
+        google()
         maven("https://packages.confluent.io/maven")
     }
 }
