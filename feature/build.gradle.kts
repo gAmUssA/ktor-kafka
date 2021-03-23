@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     `java-library`
     kotlin("jvm")
-    maven
+    `maven-publish`
 }
 
 val ktor_version: String by project
@@ -13,7 +13,7 @@ version = "0.0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://kotlin.bintray.com/ktor") }
+    maven("https://kotlin.bintray.com/ktor")
 }
 
 dependencies {
@@ -29,6 +29,6 @@ tasks.test {
     useJUnit()
 }
 
-tasks.withType<KotlinCompile>() {
+tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions.jvmTarget = "1.8"
 }
