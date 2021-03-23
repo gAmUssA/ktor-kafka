@@ -4,6 +4,7 @@ import com.typesafe.config.Config
 import io.confluent.developer.extension.configMap
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig.*
+import org.apache.kafka.clients.producer.ProducerRecord
 import java.util.*
 
 fun <K, V> buildProducer(config: Config): KafkaProducer<K, V> {
@@ -20,3 +21,8 @@ fun <K, V> buildProducer(config: Config): KafkaProducer<K, V> {
     }
     return KafkaProducer(producerProperties)
 }
+
+fun <K, V> KafkaProducer<K, V>.send(topicName: String, key: K, value: V) {
+    this.send(ProducerRecord(topicName, key, value));
+}
+

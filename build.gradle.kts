@@ -8,5 +8,6 @@ allprojects {
         jcenter()
         google()
         maven("https://packages.confluent.io/maven")
+        maven("https://repository.mulesoft.org/nexus/content/repositories/public/")
     }
 }

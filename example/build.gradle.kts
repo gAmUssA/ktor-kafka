@@ -1,12 +1,13 @@
 plugins {
     application
-    kotlin("jvm")  
+    kotlin("jvm")
     id("com.avast.gradle.docker-compose") version "0.14.1"
 }
 
 val logback_version: String by project
 val ktor_version: String by project
 val kotlin_version: String by project
+val confluent_version: String by project
 
 group = "io.confluent.developer"
 version = "0.0.1-SNAPSHOT"
@@ -37,6 +38,9 @@ repositories {
 
 dependencies {
     implementation(project(":feature"))
+
+    implementation("io.confluent:kafka-json-schema-serializer:$confluent_version")
+
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
@@ -44,5 +48,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-html-builder:$ktor_version")
     implementation("io.ktor:ktor-websockets:$ktor_version")
+    implementation("io.ktor:ktor-serialization:$ktor_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
 }
