@@ -2,6 +2,7 @@ plugins {
     application
     kotlin("jvm")
     id("com.avast.gradle.docker-compose") version "0.14.1"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
 val logback_version: String by project
@@ -13,42 +14,51 @@ group = "io.confluent.developer"
 version = "0.0.1-SNAPSHOT"
 
 application {
-    // TODO: mainClass.set doesn't work with shadowJar ???
-    // ref https://ktor.io/docs/fatjar.html#fat-jar-gradle 
+    // Replace with mainClass when PR612 is released (shadow 6.2.0?)
+    // see https://github.com/johnrengelman/shadow/pull/612
+    // mainClass.set("io.ktor.server.netty.EngineMain")
+    @Suppress("DEPRECATION")
     mainClassName = "io.ktor.server.netty.EngineMain"
 }
 
 dockerCompose.isRequiredBy(project.tasks.named("run"))
 
-tasks.withType<Jar> {
-    manifest {
-        attributes(
-            mapOf(
-                "Main-Class" to application.mainClassName
-            )
-        )
-    }
-}
-
 repositories {
     mavenCentral()
-    jcenter()
-    maven { url = uri("https://kotlin.bintray.com/ktor") }
+    maven("https://kotlin.bintray.com/ktor") {
+        content {
+            includeGroup("io.ktor")
+        }
+    }
+    maven("https://repository.mulesoft.org/nexus/content/repositories/public/") {
+        content {
+            includeModule("com.github.everit-org.json-schema", "org.everit.json.schema")
+        }
+    }
+    maven("https://packages.confluent.io/maven") {
+        content {
+            includeGroup("io.confluent")
+            includeModule("org.apache.kafka", "kafka-clients")
+        }
+    }
+    // Remove when kotlinx-html is published to Central: https://github.com/Kotlin/kotlinx.html/issues/173
+    jcenter {
+        content {
+            includeModule("org.jetbrains.kotlinx", "kotlinx-html-jvm")
+        }
+    }
 }
 
 dependencies {
     implementation(project(":feature"))
-
-    implementation("io.confluent:kafka-json-schema-serializer:$confluent_version")
-
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
-    implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("io.ktor:ktor-server-core:$ktor_version")
-    implementation("io.ktor:ktor-html-builder:$ktor_version")
-    implementation("io.ktor:ktor-websockets:$ktor_version")
-    implementation("io.ktor:ktor-serialization:$ktor_version")
+    implementation("io.confluent:kafka-json-schema-serializer:$confluent_version")
+    implementation(platform("io.ktor:ktor-bom:$ktor_version"))
+    implementation("io.ktor:ktor-html-builder")
+    implementation("io.ktor:ktor-serialization")
+    implementation("io.ktor:ktor-server-core")
+    implementation("io.ktor:ktor-server-netty")
+    implementation("io.ktor:ktor-websockets")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
-    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+    testImplementation("io.ktor:ktor-server-tests")
 }

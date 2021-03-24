@@ -1,0 +1,16 @@
+# Auto detect text files and perform LF normalization
+*        text=auto
+
+*.java   text diff=java
+*.html   text diff=html
+*.kt     text diff=kotlin
+*.kts    text diff=kotlin
+*.md     text diff=markdown
+*.js     text
+*.sql    text
+
+*.sh     text eol=lf
+gradlew  text eol=lf
+
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
