@@ -53,6 +53,9 @@ dependencies {
     implementation(project(":feature"))
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.confluent:kafka-json-schema-serializer:$confluent_version")
+
+    implementation("io.confluent:kafka-streams-avro-serde:$confluent_version")
+    implementation("io.confluent:kafka-streams-json-schema-serde:$confluent_version")
     implementation(platform("io.ktor:ktor-bom:$ktor_version"))
     implementation("io.ktor:ktor-html-builder")
     implementation("io.ktor:ktor-serialization")
@@ -61,4 +64,8 @@ dependencies {
     implementation("io.ktor:ktor-websockets")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
     testImplementation("io.ktor:ktor-server-tests")
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "1.8"
 }

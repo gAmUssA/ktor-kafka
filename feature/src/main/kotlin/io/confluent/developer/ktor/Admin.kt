@@ -26,7 +26,7 @@ fun configureKafkaTopics(config: Properties, vararg topics: String): CreateTopic
 }
 
 fun kafkaAdmin(props: Properties, block: AdminClient.() -> CreateTopicsResult): CreateTopicsResult =
-    AdminClient.create(props).run(block)
+    AdminClient.create(props).use(block)
 
 fun newTopic(name: String, block: TopicBuilder.() -> Unit): NewTopic =
     TopicBuilder(name).apply(block).build()

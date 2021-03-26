@@ -7,6 +7,7 @@ plugins {
 }
 
 val ktor_version: String by project
+val ak_version: String by project
 
 group = "io.confluent.developer"
 version = "0.0.1-SNAPSHOT"
@@ -19,7 +20,8 @@ repositories {
 dependencies {
     implementation("io.ktor:ktor-server-core:$ktor_version")
     //region Kafka and Confluent
-    api("org.apache.kafka:kafka-clients:2.7.0")
+    api("org.apache.kafka:kafka-clients:$ak_version")
+    api("org.apache.kafka:kafka-streams:$ak_version")
     //endregion
 
     testImplementation(kotlin("test-junit"))
