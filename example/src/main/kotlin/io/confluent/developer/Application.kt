@@ -60,7 +60,7 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
         //region static assets location
-        static("assets") {
+        static("/") {
             resources("META-INF/resources/assets")
         }
         //endregion
@@ -71,6 +71,7 @@ fun Application.module(testing: Boolean = false) {
             //TODO: send to kafka
 
             data class Status(val message: String)
+            println(rating)
             call.respond(HttpStatusCode.Accepted, Status("Accepted"))
         }
 

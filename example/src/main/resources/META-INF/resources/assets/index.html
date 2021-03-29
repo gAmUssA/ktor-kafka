@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script type="text/javascript">
+        window.onload = function() {
+            //
+            // xhr.open(form.method, form.action, true);
+            // xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+            // var formData = JSON.stringify(form.serializeArray());
+            // var formData = JSON.stringify(Object.fromEntries(form.target()));
+            // xhr.send(formData);
+
+            let myForm = document.getElementById('myform');
+            myForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                var formData = new FormData(myForm), result = {};
+
+                for (let entry of formData.entries()) {
+                    result[entry[0]] = entry[1];
+                }
+                result = JSON.stringify(result)
+                // console.log(result);
+
+                let xhr = new XMLHttpRequest();
+
+                xhr.open(myForm.method, myForm.action, true);
+                xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                xhr.send(result);
+            });
+
+
+        }
+    </script>
+
+</head>
+<body>
+
+<form id="myform" action="/rating" method="post" name="myform">
+    <div class="form-group row">
+        <label for="movieId" class="col-4 col-form-label">Movie title</label>
+        <div class="col-8">
+            <select id="movieId" name="movieId" class="custom-select">
+                <option value="362">Lethal Weapon</option>
+                <option value="363">Guardians of the Galaxy</option>
+                <option value="364">Se7en</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="rating" class="col-4 col-form-label">Rating</label>
+        <div class="col-8">
+            <select id="rating" name="rating" class="custom-select">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="offset-4 col-8">
+            <button name="submit" type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>
