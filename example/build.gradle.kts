@@ -57,11 +57,13 @@ dependencies {
     implementation("io.confluent:kafka-streams-avro-serde:$confluent_version")
     implementation("io.confluent:kafka-streams-json-schema-serde:$confluent_version")
     implementation(platform("io.ktor:ktor-bom:$ktor_version"))
+    implementation("io.ktor:ktor-locations")
     implementation("io.ktor:ktor-html-builder")
     implementation("io.ktor:ktor-serialization")
     implementation("io.ktor:ktor-server-core")
     implementation("io.ktor:ktor-server-netty")
     implementation("io.ktor:ktor-websockets")
+    implementation("io.ktor:ktor-jackson")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
     testImplementation("io.ktor:ktor-server-tests")
 }

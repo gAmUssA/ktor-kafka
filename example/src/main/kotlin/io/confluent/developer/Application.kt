@@ -2,11 +2,17 @@ package io.confluent.developer
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory.parseFile
+import io.confluent.developer.kstreams.Rating
 import io.confluent.developer.ktor.*
 import io.ktor.application.*
+import io.ktor.features.*
 import io.ktor.html.*
+import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.http.content.*
+import io.ktor.jackson.*
+import io.ktor.request.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.netty.*
 import io.ktor.websocket.*
@@ -25,7 +31,10 @@ fun Application.module(testing: Boolean = false) {
     val kafkaConfigPath = "src/main/resources/kafka.conf"
     val topicName = "myTopic"
 
-    
+    install(ContentNegotiation) {
+        jackson()
+    }
+
     install(WebSockets) {
         pingPeriod = Duration.ofSeconds(15)
         timeout = Duration.ofSeconds(15)
@@ -55,16 +64,14 @@ fun Application.module(testing: Boolean = false) {
             resources("META-INF/resources/assets")
         }
         //endregion
-        // TODO: parse post body
-        post("/kafka") {
-            val question = Question(
-                "http://gamov.dev/rel",
-                "just test", 42,
-                1024,
-                listOf("kafka", "streams", "java"),
-                "\uD83D\uDCAA"
-            )
-            producer.send(topicName, question.url, question)
+
+        post("rating"){
+            val rating = call.receive<Rating>()
+
+            //TODO: send to kafka
+
+            data class Status(val message: String)
+            call.respond(HttpStatusCode.Accepted, Status("Accepted"))
         }
 
         get("/") {
@@ -87,11 +94,11 @@ fun Application.module(testing: Boolean = false) {
         webSocket("/kafka") {
             try {
                 while (true) {
-                    
+
                     consumer.poll(Duration.ofMillis(100))
                         .forEach {
                             val value: Question = it.value()
-                                    
+
                             outgoing.send(Frame.Text(value.toString()))
                         }
                 }
