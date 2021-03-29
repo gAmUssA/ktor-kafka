@@ -54,8 +54,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.confluent:kafka-json-schema-serializer:$confluent_version")
 
-    implementation("io.confluent:kafka-streams-avro-serde:$confluent_version")
-    implementation("io.confluent:kafka-streams-json-schema-serde:$confluent_version")
+    implementation("io.confluent:kafka-streams-json-schema-serde:$confluent_version") {
+        exclude("org.apache.kafka", "kafka-clients")
+    }
     implementation(platform("io.ktor:ktor-bom:$ktor_version"))
     implementation("io.ktor:ktor-locations")
     implementation("io.ktor:ktor-html-builder")
