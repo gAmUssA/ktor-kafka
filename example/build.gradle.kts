@@ -9,6 +9,7 @@ val logback_version: String by project
 val ktor_version: String by project
 val kotlin_version: String by project
 val confluent_version: String by project
+val ak_version: String by project
 
 group = "io.confluent.developer"
 version = "0.0.1-SNAPSHOT"
@@ -67,6 +68,7 @@ dependencies {
     implementation("io.ktor:ktor-jackson")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
     testImplementation("io.ktor:ktor-server-tests")
+    testImplementation("org.apache.kafka:kafka-streams-test-utils:$ak_version")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

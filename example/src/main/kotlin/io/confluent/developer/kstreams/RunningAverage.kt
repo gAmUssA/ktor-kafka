@@ -6,9 +6,11 @@ import io.confluent.developer.ktor.*
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig.BASIC_AUTH_CREDENTIALS_SOURCE
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig.USER_INFO_CONFIG
 import io.confluent.kafka.streams.serdes.json.KafkaJsonSchemaSerde
-import org.apache.kafka.common.serialization.Serdes
+import io.ktor.application.*
+import io.ktor.server.netty.*
 import org.apache.kafka.common.serialization.Serdes.*
 import org.apache.kafka.common.utils.Bytes
+import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.KeyValue
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
@@ -18,59 +20,78 @@ import org.apache.kafka.streams.state.KeyValueStore
 import java.io.File
 import java.time.Duration
 import java.util.*
-import java.util.concurrent.CountDownLatch
-import kotlin.system.exitProcess
 
-fun main() {
+fun main(args: Array<String>): Unit = EngineMain.main(args)
+
+const val ratingTopicName = "ratings"
+const val ratingsAvgTopicName = "rating-averages"
+
+@Suppress("unused") // Referenced in application.conf
+@JvmOverloads
+fun Application.module(testing: Boolean = false) {
+    lateinit var streams: KafkaStreams
+
     // load properties
     val kafkaConfigPath = "src/main/resources/kafka.conf"
     val config: Config = ConfigFactory.parseFile(File(kafkaConfigPath))
     val properties = effectiveStreamProperties(config)
 
-    createTopics(properties)
+    //region Kafka
+    install(Kafka) {
+        configurationPath = kafkaConfigPath
+        topics = listOf(
+            newTopic(ratingTopicName) {
+                partitions = 3
+                //replicas = 1 // for docker
+                replicas = 3 // for cloud
+            },
+            newTopic(ratingsAvgTopicName) {
+                partitions = 3
+                //replicas = 1 // for docker
+                replicas = 3 // for cloud
+            }
+        )
+    }
+    //endregion
 
     val streamsBuilder = StreamsBuilder()
-    val topology = buildTopology(streamsBuilder, properties);
-    println(topology.describe().toString())
-    val streams = streams(topology, config)
-    val latch = CountDownLatch(1)
-    // Attach shutdown handler to catch Control-C.
-    Runtime.getRuntime().addShutdownHook(object : Thread("streams-shutdown-hook") {
-        override fun run() {
-            streams.close(Duration.ofSeconds(5))
-            latch.countDown()
-        }
-    })
-    try {
+    val topology = buildTopology(streamsBuilder, properties)
+    //(topology.describe().toString())
+
+    streams = streams(topology, config)
+
+    environment.monitor.subscribe(ApplicationStarted) {
         streams.cleanUp()
         streams.start()
-        latch.await()
-    } catch (e: Throwable) {
-        exitProcess(1)
+        log.info("Kafka Streams app is ready to roll...")
     }
-    exitProcess(0)
+
+    environment.monitor.subscribe(ApplicationStopped) {
+        log.info("Time to clean up...")
+        streams.close(Duration.ofSeconds(5))
+    }
 }
 
 fun buildTopology(
-    bldr: StreamsBuilder,
+    builder: StreamsBuilder,
     properties: Properties
 ): Topology {
 
-    val ratingTopicName = "ratings"
+    val ratingStream: KStream<Long, Rating> = ratingsStream(builder, properties)
 
-    val ratingStream: KStream<Long, Rating> = bldr.stream(
-        ratingTopicName,
-        Consumed.with(Long(), jsonSchemaSerde<Rating>(properties, false))
-    )
-
-    val avgRatingsTopicName = "rating-averages"
     getRatingAverageTable(
         ratingStream,
-        avgRatingsTopicName,
+        ratingsAvgTopicName,
         jsonSchemaSerde(properties, false)
     )
-    // finish the topology
-    return bldr.build()
+    return builder.build()
+}
+
+fun ratingsStream(builder: StreamsBuilder, properties: Properties): KStream<Long, Rating> {
+    return builder.stream(
+        ratingTopicName,
+        Consumed.with(Long(), jsonSchemaSerde(properties, false))
+    )
 }
 
 fun getRatingAverageTable(
@@ -83,26 +104,27 @@ fun getRatingAverageTable(
     val ratingsById: KGroupedStream<Long, Double> = ratings
         .map { _, rating -> KeyValue(rating.movieId, rating.rating) }
         .groupByKey(with(Long(), Double()))
+
     val ratingCountAndSum: KTable<Long, CountAndSum> = ratingsById.aggregate(
         { CountAndSum(0L, 0.0) },
         { _, value, aggregate ->
-            aggregate.count = aggregate.count++
+            aggregate.count = aggregate.count + 1
             aggregate.sum = aggregate.sum + value
             aggregate
         },
         Materialized.with(Long(), countAndSumSerde)
     )
-    val materialized = Materialized.`as`<Long, Double, KeyValueStore<Bytes, ByteArray>>("average-ratings")
-        .withKeySerde(LongSerde())
-        .withValueSerde(DoubleSerde())
+
     val ratingAverage: KTable<Long, Double> = ratingCountAndSum.mapValues(
-        { value -> value.sum / value.count },
-        materialized
+        { value -> value.sum.div(value.count) },
+        Materialized.`as`<Long, Double, KeyValueStore<Bytes, ByteArray>>("average-ratings")
+            .withKeySerde(LongSerde())
+            .withValueSerde(DoubleSerde())
     )
 
     // persist the result in topic
     val stream = ratingAverage.toStream()
-    stream.peek { key, value -> println("$key:$value") }
+    //stream.peek { key, value -> println("$key:$value") }
     stream.to(avgRatingsTopicName, producedWith<Long, Double>())
     return ratingAverage
 }
@@ -111,7 +133,7 @@ inline fun <reified V> jsonSchemaSerde(
     properties: Properties,
     isKeySerde: Boolean
 ): KafkaJsonSchemaSerde<V> {
-    val schemaSerde = KafkaJsonSchemaSerde<V>(V::class.java)
+    val schemaSerde = KafkaJsonSchemaSerde(V::class.java)
     val crSource = properties[BASIC_AUTH_CREDENTIALS_SOURCE]
     val uiConfig = properties[USER_INFO_CONFIG]
 
@@ -127,20 +149,3 @@ inline fun <reified V> jsonSchemaSerde(
     schemaSerde.configure(map, isKeySerde)
     return schemaSerde;
 }
-
-//region createTopics
-/**
- * Create topics using AdminClient API
- */
-private fun createTopics(props: Properties) {
-    val topics = listOf("ratings", "rating-averages")
-    kafkaAdmin(props) {
-        createTopics(topics.map {
-            newTopic(it) {
-                partitions = 3
-                replicas = 1
-            }
-        })
-    }
-}
-//endregion
