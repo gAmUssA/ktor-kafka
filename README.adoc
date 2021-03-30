@@ -1,5 +1,10 @@
 = Ktor Kafka Feature
 
+== Links
+
+* https://gamov.dev/ktor-kafka-git[Self-link]
+* https://gamov.dev/ktor-kafka[a workshop walkthrough]
+
 == Usage
 
 * add dependency and jitpack repo
@@ -40,7 +45,7 @@ import io.confluent.developer.ktor.Kafka
 import io.confluent.developer.ktor.newTopic
 
 fun Application.module(){
-    
+
     //install Kafka feature
     install(Kafka) {
         configurationPath = "src/main/resources/kafka.conf"
