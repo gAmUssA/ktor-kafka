@@ -7,6 +7,7 @@ import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig.BASIC
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig.USER_INFO_CONFIG
 import io.confluent.kafka.streams.serdes.json.KafkaJsonSchemaSerde
 import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.server.netty.*
 import org.apache.kafka.common.serialization.Serdes.*
 import org.apache.kafka.common.utils.Bytes
