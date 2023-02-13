@@ -48,7 +48,7 @@ class Kafka(configuration: Configuration) {
         }
     }
 
-    /*companion object Feature : ApplicationFeature<Application, Configuration, Kafka> {
+    companion object Plugin : BaseApplicationPlugin<Application, Configuration, Kafka> {
         override val key: AttributeKey<Kafka>
             get() = AttributeKey("Kafka")
 
@@ -60,5 +60,6 @@ class Kafka(configuration: Configuration) {
             return kafkaFeature
         }
 
-    }*/
+    }
+
 }
