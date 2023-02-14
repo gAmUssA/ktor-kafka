@@ -1,4 +1,3 @@
-
 val logback_version: String by project
 val ktor_version: String by project
 val kotlin_version: String by project
@@ -42,7 +41,7 @@ repositories {
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
-        vendor.set(JvmVendorSpec.AZUL)
+        vendor.set(JvmVendorSpec.BELLSOFT)
     }
 //    targetCompatibility = JavaVersion.VERSION_17
 //    sourceCompatibility = JavaVersion.VERSION_17
@@ -74,6 +73,6 @@ dependencies {
     testImplementation("org.apache.kafka:kafka-streams-test-utils:$ak_version")
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
 }

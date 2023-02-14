@@ -40,13 +40,13 @@ fun Application.module(testing: Boolean = false) {
         topics = listOf(
             newTopic(ratingTopicName) {
                 partitions = 3
-                //replicas = 1 // for docker
-                replicas = 3 // for cloud
+                replicas = 1 // for docker
+                //replicas = 3 // for cloud
             },
             newTopic(ratingsAvgTopicName) {
                 partitions = 3
-                //replicas = 1 // for docker
-                replicas = 3 // for cloud
+                replicas = 1 // for docker
+                //replicas = 3 // for cloud
             }
         )
     }

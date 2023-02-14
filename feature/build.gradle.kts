@@ -30,6 +30,6 @@ tasks.test {
     useJUnit()
 }
 
-tasks.withType<KotlinCompile>().configureEach {
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
 }
