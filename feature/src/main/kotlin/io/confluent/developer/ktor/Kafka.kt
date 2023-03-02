@@ -4,7 +4,7 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import io.confluent.developer.extension.configMap
 import io.confluent.developer.extension.logger
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.util.*
 import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.admin.CreateTopicsResult
@@ -48,7 +48,7 @@ class Kafka(configuration: Configuration) {
         }
     }
 
-    companion object Feature : ApplicationFeature<Application, Configuration, Kafka> {
+    companion object Plugin : BaseApplicationPlugin<Application, Configuration, Kafka> {
         override val key: AttributeKey<Kafka>
             get() = AttributeKey("Kafka")
 
@@ -61,4 +61,5 @@ class Kafka(configuration: Configuration) {
         }
 
     }
+
 }

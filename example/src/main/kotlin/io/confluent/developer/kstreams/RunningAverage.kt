@@ -6,7 +6,7 @@ import io.confluent.developer.ktor.*
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig.BASIC_AUTH_CREDENTIALS_SOURCE
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig.USER_INFO_CONFIG
 import io.confluent.kafka.streams.serdes.json.KafkaJsonSchemaSerde
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.server.netty.*
 import org.apache.kafka.common.serialization.Serdes.*
 import org.apache.kafka.common.utils.Bytes
@@ -26,8 +26,6 @@ fun main(args: Array<String>): Unit = EngineMain.main(args)
 const val ratingTopicName = "ratings"
 const val ratingsAvgTopicName = "rating-averages"
 
-@Suppress("unused") // Referenced in application.conf
-@JvmOverloads
 fun Application.module(testing: Boolean = false) {
     lateinit var streams: KafkaStreams
 
@@ -42,13 +40,13 @@ fun Application.module(testing: Boolean = false) {
         topics = listOf(
             newTopic(ratingTopicName) {
                 partitions = 3
-                //replicas = 1 // for docker
-                replicas = 3 // for cloud
+                replicas = 1 // for docker
+                //replicas = 3 // for cloud
             },
             newTopic(ratingsAvgTopicName) {
                 partitions = 3
-                //replicas = 1 // for docker
-                replicas = 3 // for cloud
+                replicas = 1 // for docker
+                //replicas = 3 // for cloud
             }
         )
     }

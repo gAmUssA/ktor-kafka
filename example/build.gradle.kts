@@ -1,36 +1,29 @@
-plugins {
-    application
-    kotlin("jvm")
-    id("com.avast.gradle.docker-compose") version "0.14.1"
-    id("com.github.johnrengelman.shadow") version "6.1.0"
-}
-
 val logback_version: String by project
 val ktor_version: String by project
 val kotlin_version: String by project
 val confluent_version: String by project
 val ak_version: String by project
 
+plugins {
+    application
+    kotlin("jvm")
+    id("io.ktor.plugin") version "2.2.3"
+    id("com.avast.gradle.docker-compose") version "0.14.1"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+}
+
 group = "io.confluent.developer"
 version = "0.0.1-SNAPSHOT"
 
 application {
-    // Replace with mainClass when PR612 is released (shadow 6.2.0?)
-    // see https://github.com/johnrengelman/shadow/pull/612
-    // mainClass.set("io.ktor.server.netty.EngineMain")
-    @Suppress("DEPRECATION")
-    mainClassName = "io.ktor.server.netty.EngineMain"
+    mainClass.set("io.ktor.server.netty.EngineMain")
 }
 
 dockerCompose.isRequiredBy(project.tasks.named("run"))
 
 repositories {
     mavenCentral()
-    maven("https://kotlin.bintray.com/ktor") {
-        content {
-            includeGroup("io.ktor")
-        }
-    }
+    //region extras
     maven("https://repository.mulesoft.org/nexus/content/repositories/public/") {
         content {
             includeModule("com.github.everit-org.json-schema", "org.everit.json.schema")
@@ -42,12 +35,16 @@ repositories {
             includeModule("org.apache.kafka", "kafka-clients")
         }
     }
-    // Remove when kotlinx-html is published to Central: https://github.com/Kotlin/kotlinx.html/issues/173
-    jcenter {
-        content {
-            includeModule("org.jetbrains.kotlinx", "kotlinx-html-jvm")
-        }
+    //endregion
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+        vendor.set(JvmVendorSpec.BELLSOFT)
     }
+//    targetCompatibility = JavaVersion.VERSION_17
+//    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
@@ -58,19 +55,24 @@ dependencies {
     implementation("io.confluent:kafka-streams-json-schema-serde:$confluent_version") {
         exclude("org.apache.kafka", "kafka-clients")
     }
-    implementation(platform("io.ktor:ktor-bom:$ktor_version"))
-    implementation("io.ktor:ktor-locations")
-    implementation("io.ktor:ktor-html-builder")
-    implementation("io.ktor:ktor-serialization")
+
     implementation("io.ktor:ktor-server-core")
+    implementation("io.ktor:ktor-server-locations")
+    implementation("io.ktor:ktor-server-html-builder")
+    implementation("io.ktor:ktor-serialization")
     implementation("io.ktor:ktor-server-netty")
-    implementation("io.ktor:ktor-websockets")
-    implementation("io.ktor:ktor-jackson")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
+    implementation("io.ktor:ktor-server-websockets")
+    implementation("io.ktor:ktor-serialization-jackson")
+    implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation("io.ktor:ktor-server-content-negotiation")
+    implementation("io.ktor:ktor-server-websockets")
+    implementation("io.ktor:ktor-server-core-jvm")
+    implementation("io.ktor:ktor-server-websockets-jvm")
     testImplementation("io.ktor:ktor-server-tests")
+
     testImplementation("org.apache.kafka:kafka-streams-test-utils:$ak_version")
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions.jvmTarget = "1.8"
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "17"
 }
