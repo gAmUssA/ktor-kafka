@@ -3,6 +3,7 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val confluent_version: String by project
 val ak_version: String by project
+val testcontainers_version: String by project
 
 plugins {
     application
@@ -55,6 +56,11 @@ dependencies {
     implementation("io.confluent:kafka-streams-json-schema-serde:$confluent_version") {
         exclude("org.apache.kafka", "kafka-clients")
     }
+
+    implementation(platform("org.testcontainers:testcontainers-bom:$testcontainers_version"))
+    testImplementation("org.testcontainers:kafka")
+    testImplementation("org.awaitility:awaitility:4.1.1")
+    testImplementation("org.assertj:assertj-core:3.22.0")
 
     implementation("io.ktor:ktor-server-core")
     implementation("io.ktor:ktor-server-locations")
