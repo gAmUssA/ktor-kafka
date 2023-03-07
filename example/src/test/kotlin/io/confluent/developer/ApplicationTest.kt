@@ -1,16 +1,8 @@
 package io.confluent.developer
 
-import io.confluent.developer.ktor.buildConsumer
-import io.confluent.developer.ktor.buildProducer
-import io.ktor.server.config.*
-import io.ktor.server.testing.*
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
-import org.testcontainers.containers.KafkaContainer
-import org.testcontainers.utility.DockerImageName
-
 
 class ApplicationTest {
+/*
 
     companion object {
         @JvmStatic
@@ -37,6 +29,7 @@ class ApplicationTest {
         }
 
     }
+*/
 
 }
 

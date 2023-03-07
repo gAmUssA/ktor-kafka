@@ -3,7 +3,7 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val confluent_version: String by project
 val ak_version: String by project
-val testcontainers_version: String by project
+
 
 plugins {
     application
@@ -57,11 +57,6 @@ dependencies {
         exclude("org.apache.kafka", "kafka-clients")
     }
 
-    implementation(platform("org.testcontainers:testcontainers-bom:$testcontainers_version"))
-    testImplementation("org.testcontainers:kafka")
-    testImplementation("org.awaitility:awaitility:4.1.1")
-    testImplementation("org.assertj:assertj-core:3.22.0")
-
     implementation("io.ktor:ktor-server-core")
     implementation("io.ktor:ktor-server-locations")
     implementation("io.ktor:ktor-server-html-builder")
@@ -76,7 +71,17 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets-jvm")
     testImplementation("io.ktor:ktor-server-tests")
 
+    //junit5
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+
+    testImplementation("org.assertj:assertj-core:3.22.0")
+
     testImplementation("org.apache.kafka:kafka-streams-test-utils:$ak_version")
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

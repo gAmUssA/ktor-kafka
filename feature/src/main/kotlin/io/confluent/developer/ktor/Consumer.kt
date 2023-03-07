@@ -19,7 +19,9 @@ fun <K, V> buildConsumer(config: Config): KafkaConsumer<K, V> {
         putAll(commonConfig)
         putAll(consumerConfig)
         put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers.unwrapped())
+        put("group.id", "ktor-consumer-"+Random().nextInt())
     }
+
     return KafkaConsumer(consumerProperties)
 }
 
