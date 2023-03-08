@@ -1,13 +1,13 @@
 package io.confluent.developer.ktor
 
-import com.typesafe.config.Config
 import io.confluent.developer.extension.configMap
+import io.ktor.server.config.*
+import org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG
 import org.apache.kafka.clients.consumer.KafkaConsumer
-import org.apache.kafka.clients.producer.ProducerConfig
 import java.util.*
 
-fun <K, V> buildConsumer(config: Config): KafkaConsumer<K, V> {
-    val bootstrapServers = config.getList("ktor.kafka.bootstrap.servers")
+fun <K, V> buildConsumer(config: ApplicationConfig): KafkaConsumer<K, V> {
+    val bootstrapServers: List<String> = config.property("ktor.kafka.bootstrap.servers").getList()
 
     // common config
     val commonConfig = configMap(config, "ktor.kafka.properties")
@@ -18,14 +18,13 @@ fun <K, V> buildConsumer(config: Config): KafkaConsumer<K, V> {
     val consumerProperties: Properties = Properties().apply {
         putAll(commonConfig)
         putAll(consumerConfig)
-        put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers.unwrapped())
-        put("group.id", "ktor-consumer-"+Random().nextInt())
+        put(BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
     }
 
     return KafkaConsumer(consumerProperties)
 }
 
-fun <K, V> createKafkaConsumer(config: Config, topic: String): KafkaConsumer<K, V> {
+fun <K, V> createKafkaConsumer(config: ApplicationConfig, topic: String): KafkaConsumer<K, V> {
     val consumer = buildConsumer<K, V>(config)
     consumer.subscribe(listOf(topic))
     return consumer

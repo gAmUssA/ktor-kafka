@@ -1,7 +1,5 @@
 package io.confluent.developer
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory.parseFile
 import io.confluent.developer.html.Html.indexHTML
 import io.confluent.developer.kstreams.Rating
 import io.confluent.developer.kstreams.ratingTopicName
@@ -13,7 +11,6 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.config.*
-import io.ktor.server.engine.*
 import io.ktor.server.html.*
 import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
@@ -25,7 +22,6 @@ import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.KafkaProducer
-import java.io.File
 import java.time.Duration
 
 fun main(args: Array<String>): Unit = EngineMain.main(args)
@@ -38,9 +34,8 @@ fun Application.module(testing: Boolean = false) {
     }
 
     //https://youtrack.jetbrains.com/issue/KTOR-2318
-    val kafkaConfigPath = "src/main/resources/kafka.conf"
-    val config: Config = parseFile(File(kafkaConfigPath))
-    val producer: KafkaProducer<Long, Rating> = buildProducer(ApplicationConfig("kafka.conf"))
+    val config = ApplicationConfig("kafka.conf")
+    val producer: KafkaProducer<Long, Rating> = buildProducer(config)
 
     routing {
         //region static assets location

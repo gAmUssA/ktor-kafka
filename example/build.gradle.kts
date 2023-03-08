@@ -49,7 +49,7 @@ java {
 }
 
 dependencies {
-    implementation(project(":feature"))
+    implementation(project(":plugin"))
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.confluent:kafka-json-schema-serializer:$confluent_version")
 
@@ -69,7 +69,7 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets")
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-websockets-jvm")
-    testImplementation("io.ktor:ktor-server-tests")
+
 
     //junit5
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")

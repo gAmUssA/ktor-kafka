@@ -26,6 +26,6 @@ fun configMap(config: ApplicationConfig, path: String): Map<String, Any?> =
     config.config(path).keys().associateBy({ it }, { config.config(path).property(it).getString() })
 
 
-fun HoconApplicationConfig.toMap(path: String): Map<String, Any?> {
+fun ApplicationConfig.toMap(path: String): Map<String, Any?> {
     return config(path).keys().associateBy({ it }, { config(path).property(it).getString() })
 }

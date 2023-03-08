@@ -14,7 +14,8 @@ class ExtensionsKtTest {
     fun configMapTestBlah() {
         val config = ApplicationConfig("kafka-config-map.conf")
         val fixture = "org.apache.kafka.common.serialization.LongSerializer"
-        val map = configMap(config, "ktor.kafka.producer")
+        //val map = configMap(config, "ktor.kafka.producer")
+        val map = config.toMap("ktor.kafka.producer")
 
         assertThat(map["key.serializer"]).isEqualTo(fixture)
     }

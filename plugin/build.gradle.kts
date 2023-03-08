@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `java-library`
+    id("io.ktor.plugin") version "2.2.3"
     kotlin("jvm")
     `maven-publish`
 }
@@ -9,6 +10,7 @@ plugins {
 val ak_version: String by project
 val ktor_version: String by project
 val testcontainers_version: String by project
+val logback_version: String by project
 
 group = "io.confluent.developer"
 version = "0.0.1-SNAPSHOT"
@@ -18,12 +20,13 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core:$ktor_version")
+    implementation("io.ktor:ktor-server-core")
     //region Kafka and Confluent
     api("org.apache.kafka:kafka-clients:$ak_version")
     api("org.apache.kafka:kafka-streams:$ak_version")
     //endregion
 
+    implementation("ch.qos.logback:logback-classic:$logback_version")
     //junit5
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
@@ -34,6 +37,8 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.22.0")
 
     testImplementation(kotlin("test-junit"))
+
+    testImplementation("io.ktor:ktor-server-tests")
 }
 
 tasks.named<Test>("test") {
