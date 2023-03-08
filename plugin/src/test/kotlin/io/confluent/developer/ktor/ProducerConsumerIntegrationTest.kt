@@ -5,21 +5,19 @@ import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.ConsumerRecords
-import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
-import org.awaitility.Awaitility
 import org.awaitility.Awaitility.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.KafkaContainer
 import org.testcontainers.utility.DockerImageName.parse
 import java.time.Duration
 import java.util.concurrent.*
-import java.util.stream.Stream
 
-class ProducerKtTest {
+class ProducerConsumerIntegrationTest {
 
     companion object {
         lateinit var kafka: KafkaContainer
@@ -42,6 +40,7 @@ class ProducerKtTest {
     }
 
     @Test
+    @DisplayName("should start KafkaProducer send to topic and KafkaConsumer consume from topic")
     fun testDevEnvironment() = testApplication {
         val stringSerializerName = StringSerializer::class.java.name
         val stringDeserializerName = StringDeserializer::class.java.name

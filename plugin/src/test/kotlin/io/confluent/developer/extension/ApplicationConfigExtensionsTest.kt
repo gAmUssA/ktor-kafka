@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-class ExtensionsKtTest {
+class ApplicationConfigExtensionsTest {
 
     @Test
-    @DisplayName("should parse config file and extract property name")
+    @DisplayName("should extract config value based on path - config from file")
     fun configMapTestBlah() {
         val config = ApplicationConfig("kafka-config-map.conf")
         val fixture = "org.apache.kafka.common.serialization.LongSerializer"
@@ -20,7 +20,7 @@ class ExtensionsKtTest {
         assertThat(map["key.serializer"]).isEqualTo(fixture)
     }
     @Test
-    @DisplayName("should parse ")
+    @DisplayName("should extract configs value based on path - inline config")
     fun testToMapWithPath() {
         val string = """
             ktor {

@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -43,7 +45,15 @@ dependencies {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+    testLogging {
+        outputs.upToDateWhen { false }
+        outputs.upToDateWhen { false }
+        showStandardStreams = false
+        events = setOf(PASSED, SKIPPED, FAILED)
+        exceptionFormat = FULL
+    }
 }
+
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
