@@ -2,12 +2,6 @@ package io.confluent.developer.extension
 
 import com.typesafe.config.Config
 import io.ktor.server.config.*
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
-inline fun <reified T> logger(): Logger {
-    return LoggerFactory.getLogger(T::class.java)
-}
 
 /*
 *   TODO: delete

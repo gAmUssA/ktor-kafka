@@ -16,7 +16,7 @@ fun <K, V> buildProducer(config: ApplicationConfig): KafkaProducer<K, V> {
     //val commonConfig = configMap(config, "ktor.kafka.properties")
     val commonConfig = config.toMap("ktor.kafka.properties")
     // get producer config
-    val producerConfig = configMap(config, "ktor.kafka.producer")
+    val producerConfig = config.toMap("ktor.kafka.producer")
     // creating properties
     val producerProperties: Properties = Properties().apply {
         putAll(producerConfig)

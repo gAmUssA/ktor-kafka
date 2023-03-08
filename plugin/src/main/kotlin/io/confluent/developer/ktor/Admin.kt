@@ -7,12 +7,12 @@ import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.admin.CreateTopicsResult
 import org.apache.kafka.clients.admin.NewTopic
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.config.TopicConfig
 import java.util.*
 
 /*
     example of Kafka Admin API usage
+    TODO: write integration/TC test instead of inline example
  */
 @SuppressWarnings("unused")
 fun configureKafkaTopics(config: Properties, vararg topics: String): CreateTopicsResult {
