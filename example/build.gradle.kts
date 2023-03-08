@@ -8,9 +8,9 @@ val ak_version: String by project
 plugins {
     application
     kotlin("jvm")
-    id("io.ktor.plugin") version "2.2.3"
-    id("com.avast.gradle.docker-compose") version "0.14.1"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.ktor.plugin") version "2.2.4"
+    id("com.avast.gradle.docker-compose") version "0.16.11"
+    id("com.github.johnrengelman.shadow") version "8.1.0"
 }
 
 group = "io.confluent.developer"
