@@ -66,9 +66,10 @@ dependencies {
     implementation("io.ktor:ktor-serialization-jackson")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
     implementation("io.ktor:ktor-server-content-negotiation")
-    implementation("io.ktor:ktor-server-websockets")
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-websockets-jvm")
+/*    implementation("io.ktor:ktor-server-webjars")
+    implementation("org.webjars.npm:nanoid:4.0.1")*/
 
 
     //junit5
