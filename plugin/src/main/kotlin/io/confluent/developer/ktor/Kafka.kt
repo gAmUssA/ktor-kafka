@@ -59,7 +59,5 @@ class Kafka(configuration: Configuration) {
             kafkaFeature.createTopics()
             return kafkaFeature
         }
-
     }
-
 }

@@ -4,12 +4,13 @@ val kotlin_version: String by project
 val confluent_version: String by project
 val ak_version: String by project
 
+
 plugins {
     application
     kotlin("jvm")
-    id("io.ktor.plugin") version "2.2.3"
-    id("com.avast.gradle.docker-compose") version "0.14.1"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.ktor.plugin") version "2.2.4"
+    id("com.avast.gradle.docker-compose") version "0.16.11"
+    id("com.github.johnrengelman.shadow") version "8.1.0"
 }
 
 group = "io.confluent.developer"
@@ -48,7 +49,7 @@ java {
 }
 
 dependencies {
-    implementation(project(":feature"))
+    implementation(project(":plugin"))
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.confluent:kafka-json-schema-serializer:$confluent_version")
 
@@ -65,12 +66,23 @@ dependencies {
     implementation("io.ktor:ktor-serialization-jackson")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
     implementation("io.ktor:ktor-server-content-negotiation")
-    implementation("io.ktor:ktor-server-websockets")
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-websockets-jvm")
-    testImplementation("io.ktor:ktor-server-tests")
+/*    implementation("io.ktor:ktor-server-webjars")
+    implementation("org.webjars.npm:nanoid:4.0.1")*/
+
+
+    //junit5
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+
+    testImplementation("org.assertj:assertj-core:3.22.0")
 
     testImplementation("org.apache.kafka:kafka-streams-test-utils:$ak_version")
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

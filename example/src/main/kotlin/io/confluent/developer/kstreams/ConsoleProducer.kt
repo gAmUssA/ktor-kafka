@@ -1,15 +1,13 @@
 package io.confluent.developer.kstreams
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 import io.confluent.developer.ktor.buildProducer
 import io.confluent.developer.ktor.send
-import java.io.File
+import io.ktor.server.config.*
 
 fun main() {
-    val kafkaConfigPath = "src/main/resources/kafka.conf"
-    val config: Config = ConfigFactory.parseFile(File(kafkaConfigPath))
-    val producer = buildProducer<Long, Rating>(config)
+
+    val applicationConfig = ApplicationConfig("kafka.conf")
+    val producer = buildProducer<Long, Rating>(applicationConfig)
 
     val rating10 = Rating(movieId = 362, rating = 10.0)
     val rating8 = Rating(movieId = 362, rating = 8.0)

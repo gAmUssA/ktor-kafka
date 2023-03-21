@@ -7,12 +7,11 @@ import org.apache.kafka.common.serialization.LongSerializer
 import org.apache.kafka.streams.*
 import org.apache.kafka.streams.kstream.KStream
 import org.apache.kafka.streams.state.KeyValueStore
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.within
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.util.*
 
 
@@ -20,7 +19,7 @@ class RunningAverageTest {
     private lateinit var testDriver: TopologyTestDriver
     private var ratingSpecificAvroSerde: KafkaJsonSchemaSerde<Rating>? = null
 
-    @Before
+    @BeforeEach
     fun setUp() {
         val mockProps = Properties()
         mockProps["application.id"] = "kafka-movies-test"
@@ -44,7 +43,7 @@ class RunningAverageTest {
 
     @Test
     fun validateIfTestDriverCreated() {
-        Assert.assertNotNull(testDriver)
+        assertThat(testDriver).isNotNull
     }
 
     @Test
@@ -70,16 +69,15 @@ class RunningAverageTest {
         // I expect second record in topic will contain correct result
         val longDoubleKeyValue = keyValues[1]
         println("longDoubleKeyValue = $longDoubleKeyValue")
-        MatcherAssert.assertThat(
-            longDoubleKeyValue,
-            CoreMatchers.equalTo(KeyValue(362L, 9.0))
-        )
+
+        assertThat(longDoubleKeyValue).isEqualTo(KeyValue(362L, 9.0))
+
         val keyValueStore: KeyValueStore<Long, Double> = testDriver.getKeyValueStore("average-ratings")
-        val expected = keyValueStore[362L]
-        Assert.assertEquals("Message", expected, 9.0, 0.0)
+        val actual = keyValueStore[362L]
+        assertThat(actual).isEqualTo(9.0, within(0.0))
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         testDriver.close()
     }
