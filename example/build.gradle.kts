@@ -10,7 +10,7 @@ plugins {
     kotlin("jvm")
     id("io.ktor.plugin") version "2.2.4"
     id("com.avast.gradle.docker-compose") version "0.16.11"
-    id("com.github.johnrengelman.shadow") version "8.1.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "io.confluent.developer"
