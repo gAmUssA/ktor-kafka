@@ -35,7 +35,7 @@ dependencies {
 
     implementation(platform("org.testcontainers:testcontainers-bom:$testcontainers_version"))
     testImplementation("org.testcontainers:kafka")
-    testImplementation("org.awaitility:awaitility:4.1.1")
+    testImplementation("org.awaitility:awaitility:4.2.0")
     testImplementation("org.assertj:assertj-core:3.22.0")
 
     testImplementation(kotlin("test-junit"))
