@@ -31,12 +31,12 @@ window.onload = function () {
         $(".alert").show()
     });
 
-    let ws = new WebSocket(`${wsBase}/kafka?clientId=${guid()}`);
-
-    ws.onmessage = function (event) {
-        let data = JSON.parse(event.data);
-        console.log(data)
-    };
+    // let ws = new WebSocket(`${wsBase}/kafka?clientId=${guid()}`);
+    //
+    // ws.onmessage = function (event) {
+    //     let data = JSON.parse(event.data);
+    //     console.log(data)
+    // };
 
     /*window.setInterval(function () {
         ws.send(JSON.stringify({
