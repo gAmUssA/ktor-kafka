@@ -1,3 +1,5 @@
+#jdk:
+#  - 17.0.6-librca
 before_install:
   - sdk install java 17.0.6-librca
   - sdk use java 17.0.6-librca
