@@ -42,10 +42,7 @@ repositories {
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
-        vendor.set(JvmVendorSpec.BELLSOFT)
     }
-//    targetCompatibility = JavaVersion.VERSION_17
-//    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
@@ -68,8 +65,8 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation")
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-websockets-jvm")
-/*    implementation("io.ktor:ktor-server-webjars")
-    implementation("org.webjars.npm:nanoid:4.0.1")*/
+    /*    implementation("io.ktor:ktor-server-webjars")
+        implementation("org.webjars.npm:nanoid:4.0.1")*/
 
 
     //junit5

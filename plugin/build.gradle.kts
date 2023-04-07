@@ -17,6 +17,9 @@ val logback_version: String by project
 group = "io.confluent.developer"
 version = "0.0.1-SNAPSHOT"
 
+application {
+    mainClass.set("io.ktor.server.netty.EngineMain")
+}
 repositories {
     mavenCentral()
 }
