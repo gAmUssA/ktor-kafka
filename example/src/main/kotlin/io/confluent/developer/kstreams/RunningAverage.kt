@@ -18,6 +18,8 @@ import org.apache.kafka.streams.kstream.*
 import org.apache.kafka.streams.kstream.Grouped.with
 import org.apache.kafka.streams.state.KeyValueStore
 import java.io.File
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.util.*
 
@@ -40,13 +42,13 @@ fun Application.module(testing: Boolean = false) {
         topics = listOf(
             newTopic(ratingTopicName) {
                 partitions = 3
-                replicas = 1 // for docker
-                //replicas = 3 // for cloud
+                replicas = 1    // for docker
+                //replicas = 3  // for cloud
             },
             newTopic(ratingsAvgTopicName) {
                 partitions = 3
-                replicas = 1 // for docker
-                //replicas = 3 // for cloud
+                replicas = 1    // for docker
+                //replicas = 3  // for cloud
             }
         )
     }
@@ -54,7 +56,10 @@ fun Application.module(testing: Boolean = false) {
 
     val streamsBuilder = StreamsBuilder()
     val topology = buildTopology(streamsBuilder, properties)
-    //(topology.describe().toString())
+    // if you want to see a visual representation of the Kafka Stream Topology uncomment below
+    //
+    //var encodeToString = Base64.getEncoder().encodeToString(topology.describe().toString().toByteArray(StandardCharsets.UTF_8))
+    //log.debug("https://gaetancollaud.github.io/kafka-streams-visualization/#${encodeToString}")
 
     streams = streams(topology, config)
 

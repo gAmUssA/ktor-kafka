@@ -1,0 +1,45 @@
+ktor {
+  kafka {
+    # Required connection configs for Kafka producer, consumer, and admin
+    # Service URI from Aiven Console
+    bootstrap.servers = ["cluster_name-project_name.aivencloud.com:24035"]
+
+    properties {
+        security.protocol = SASL_SSL
+        sasl.jaas.config = "org.apache.kafka.common.security.scram.ScramLoginModule required username=<username> password=<password>;"
+        sasl.mechanism = SCRAM-SHA-256
+        ssl.truststore.type="jks"
+        ssl.truststore.location="/etc/kafka/secrets/client.truststore.jks"
+        ssl.truststore.password="<trust-store-password>"
+        # Required for correctness in Apache Kafka clients prior to 2.6
+        client.dns.lookup = use_all_dns_ips
+        # Best practice for Kafka producer to prevent data loss
+        acks = all
+
+      # Required connection configs for Confluent Cloud Schema Registry
+      schema.registry.url = "https://cluster_name-project_name.aivencloud.com:24027"
+      basic.auth.credentials.source = "USER_INFO"
+      basic.auth.user.info = "<username>:<password>"
+    }
+    consumer {
+      group.id = "ktor-consumer"
+      key.deserializer = org.apache.kafka.common.serialization.LongDeserializer
+      value.deserializer = org.apache.kafka.common.serialization.DoubleDeserializer
+    }
+    producer {
+      client.id = "ktor-producer"
+      key.serializer = org.apache.kafka.common.serialization.LongSerializer
+      value.serializer = io.confluent.kafka.serializers.json.KafkaJsonSchemaSerializer
+    }
+    streams {
+      application.id = "ktor-stream"
+      # for production and cloud should be 3
+      replication.factor = 1
+      //cache.max.size.buffering = 1024
+      cache.max.bytes.buffering = 0
+      default.topic.replication.factor = 1
+      //default.key.serde
+      //default.value.serde
+    }
+  }
+}
