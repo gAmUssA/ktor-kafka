@@ -33,13 +33,13 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
     //junit5
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 
     implementation(platform("org.testcontainers:testcontainers-bom:$testcontainers_version"))
     testImplementation("org.testcontainers:kafka")
-    testImplementation("org.awaitility:awaitility:4.1.1")
-    testImplementation("org.assertj:assertj-core:3.22.0")
+    testImplementation("org.awaitility:awaitility:4.2.0")
+    testImplementation("org.assertj:assertj-core:3.24.2")
 
     testImplementation(kotlin("test-junit"))
 
@@ -57,7 +57,17 @@ tasks.named<Test>("test") {
     }
 }
 
-
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
+            from(components["java"])
+        }
+    }
 }
