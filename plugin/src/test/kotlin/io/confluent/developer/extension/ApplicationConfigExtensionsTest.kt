@@ -1,6 +1,7 @@
 package io.confluent.developer.extension
 
 import com.typesafe.config.ConfigFactory
+import io.confluent.developer.ktor.effectiveStreamProperties
 import io.ktor.server.config.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
@@ -9,16 +10,37 @@ import org.junit.jupiter.api.Test
 
 class ApplicationConfigExtensionsTest {
 
+    private val config = ApplicationConfig("kafka-config-map.conf")
+
     @Test
     @DisplayName("should extract config value based on path - config from file")
-    fun configMapTestBlah() {
-        val config = ApplicationConfig("kafka-config-map.conf")
-        val fixture = "org.apache.kafka.common.serialization.LongSerializer"
-        //val map = configMap(config, "ktor.kafka.producer")
+    fun testPathConfig() {
         val map = config.toMap("ktor.kafka.producer")
 
-        assertThat(map["key.serializer"]).isEqualTo(fixture)
+        assertThat(map["key.serializer"])
+            .isEqualTo("org.apache.kafka.common.serialization.LongSerializer")
     }
+
+    @Test
+    @DisplayName("should extract config for streams based on path - config from file")
+    fun testStreamsConfig() {
+        val map = config.toMap("ktor.kafka.streams")
+
+        assertThat(map["application.id"])
+            .isEqualTo("ktor-stream")
+    }
+
+    @Test
+    @DisplayName("effectiveConfig should produce correct config for streams")
+    fun effectiveConfigTest() {
+        effectiveStreamProperties(config)
+
+        assertThat(config.toMap("ktor.kafka.streams")["application.id"])
+            .isEqualTo("ktor-stream")
+        assertThat(config.toMap("ktor.kafka.properties")["schema.registry.url"])
+            .isEqualTo("http://localhost:8081")
+    }
+
     @Test
     @DisplayName("should extract configs value based on path - inline config")
     fun testToMapWithPath() {

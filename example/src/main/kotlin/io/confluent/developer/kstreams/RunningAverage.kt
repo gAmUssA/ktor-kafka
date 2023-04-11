@@ -7,6 +7,7 @@ import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig.BASIC
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig.USER_INFO_CONFIG
 import io.confluent.kafka.streams.serdes.json.KafkaJsonSchemaSerde
 import io.ktor.server.application.*
+import io.ktor.server.config.*
 import io.ktor.server.netty.*
 import org.apache.kafka.common.serialization.Serdes.*
 import org.apache.kafka.common.utils.Bytes
@@ -18,8 +19,6 @@ import org.apache.kafka.streams.kstream.*
 import org.apache.kafka.streams.kstream.Grouped.with
 import org.apache.kafka.streams.state.KeyValueStore
 import java.io.File
-import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.util.*
 
@@ -33,7 +32,7 @@ fun Application.module(testing: Boolean = false) {
 
     // load properties
     val kafkaConfigPath = "src/main/resources/kafka.conf"
-    val config: Config = ConfigFactory.parseFile(File(kafkaConfigPath))
+    val config = HoconApplicationConfig(ConfigFactory.parseFile(File(kafkaConfigPath)))
     val properties = effectiveStreamProperties(config)
 
     //region Kafka
