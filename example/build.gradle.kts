@@ -3,6 +3,7 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val confluent_version: String by project
 val ak_version: String by project
+val webtau_version: String = "1.52-SNAPSHOT"
 
 plugins {
     application
@@ -23,6 +24,9 @@ dockerCompose.isRequiredBy(project.tasks.named("run"))
 
 repositories {
     mavenCentral()
+
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
+
     //region extras
     maven("https://repository.mulesoft.org/nexus/content/repositories/public/") {
         content {
@@ -77,6 +81,10 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.24.2")
 
     testImplementation("org.apache.kafka:kafka-streams-test-utils:$ak_version")
+
+    // webtau
+    testImplementation("org.testingisdocumenting.webtau:webtau:$webtau_version")
+    testImplementation("org.testingisdocumenting.webtau:webtau-junit5:$webtau_version")
 }
 
 tasks.named<Test>("test") {
