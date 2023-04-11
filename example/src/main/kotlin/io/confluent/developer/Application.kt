@@ -1,21 +1,19 @@
 package io.confluent.developer
 
 import io.confluent.developer.extension.logger
-import io.confluent.developer.html.Html.indexHTML
 import io.confluent.developer.kstreams.Rating
 import io.confluent.developer.kstreams.ratingTopicName
 import io.confluent.developer.kstreams.ratingsAvgTopicName
 import io.confluent.developer.ktor.buildProducer
 import io.confluent.developer.ktor.createKafkaConsumer
 import io.confluent.developer.ktor.send
+import io.confluent.developer.plugin.configureDefaultHeaders
+import io.confluent.developer.plugin.configureRouting
+import io.confluent.developer.plugin.configureWebsockets
 import io.ktor.http.*
-import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.config.*
-import io.ktor.server.html.*
-import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -32,27 +30,15 @@ fun main(args: Array<String>): Unit = EngineMain.main(args)
 fun Application.module(testing: Boolean = false) {
     val log = logger<Application>()
 
-    install(WebSockets)
-    install(ContentNegotiation) {
-        jackson()
-    }
-    /*
-        install(Webjars){
-            path = "assets"
-        }
-    */
+    configureDefaultHeaders()
+    configureWebsockets()
 
     //https://youtrack.jetbrains.com/issue/KTOR-2318
     val config = ApplicationConfig("kafka.conf")
     val producer: KafkaProducer<Long, Rating> = buildProducer(config)
 
+    configureRouting()
     routing {
-        //region static assets location
-        static("/assets") {
-            resources("META-INF/resources/assets")
-        }
-        //endregion
-
         post("rating") {
             val rating = call.receive<Rating>()
 
@@ -77,14 +63,8 @@ fun Application.module(testing: Boolean = false) {
                     unsubscribe()
                     //close()
                 }
-                //log.info("consumer for ${consumer.groupMetadata().groupId()} unsubscribed and closed...")
+                log.info("consumer for ${consumer.groupMetadata().groupId()} unsubscribed and closed...")
             }
-        }
-        get("/") {
-            call.respondHtml(
-                HttpStatusCode.OK,
-                indexHTML
-            )
         }
     }
 }
