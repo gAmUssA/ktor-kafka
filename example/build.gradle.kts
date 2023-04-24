@@ -7,7 +7,7 @@ val ak_version: String by project
 plugins {
     application
     kotlin("jvm")
-    id("io.ktor.plugin") version "2.2.4"
+    id("io.ktor.plugin") version "2.3.0"
     id("com.avast.gradle.docker-compose") version "0.16.12"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
