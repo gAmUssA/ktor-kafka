@@ -65,7 +65,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-websockets-jvm")
     implementation("io.ktor:ktor-server-default-headers")
-    implementation("io.ktor:ktor-server-default-headers-jvm:2.2.4")
+    implementation("io.ktor:ktor-server-default-headers-jvm:2.3.0")
     /*    implementation("io.ktor:ktor-server-webjars")
         implementation("org.webjars.npm:nanoid:4.0.1")*/
 
